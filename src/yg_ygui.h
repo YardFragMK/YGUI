@@ -17,7 +17,7 @@ namespace YGUI {
     void DrawWindow(const char* title, bool* open);
     void EndWindow();
     bool DrawButton(const char* label, float width = 100.0f, float height = 30.0f);
-    void DrawText(const char* fmt, ...);
+    void DrawLabel(const char* fmt, ...);
     bool DrawTextBox(const char* label, char* buffer, size_t bufferSize);
     bool DrawCheckBox(const char* label, bool* value);
     bool DrawSliderFloat(const char* label, float* value, float min, float max);
