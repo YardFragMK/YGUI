@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="Ygui.vcxproj" Id="2cf70be2-06a1-40d1-ab87-6340bb25ae38" />
+  <Project Path="src/ygui_dll.vcxproj" Id="b3bd8fc0-edf5-49a5-ab0a-735bad9cad17" />
 </Solution>

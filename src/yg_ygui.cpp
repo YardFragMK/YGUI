@@ -1,8 +1,7 @@
+#include "pch.h"
 #include "yg_ygui.h"
-#include "imgui.h"
-#include "imgui_internal.h"
-#include <stdarg.h>
-#include <cstdio>
+
+
 
 namespace YGUI {
     static ImU32 Color_Light = ImGui::ColorConvertFloat4ToU32(ImVec4(0.60f, 0.60f, 0.60f, 1.00f));
