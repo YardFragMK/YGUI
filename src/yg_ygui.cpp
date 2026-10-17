@@ -1,12 +1,10 @@
 #include "pch.h"
 #include "yg_ygui.h"
 
-
-
 namespace YGUI {
     static ImU32 Color_Light = ImGui::ColorConvertFloat4ToU32(ImVec4(0.60f, 0.60f, 0.60f, 1.00f));
     static ImU32 Color_Dark = ImGui::ColorConvertFloat4ToU32(ImVec4(0.02f, 0.02f, 0.02f, 1.00f));
-    static ImU32 Color_Shadow = ImGui::ColorConvertFloat4ToU32(ImVec4(0.15f, 0.03f, 0.03f, 1.00f));
+    static ImU32 Color_Shadow = ImGui::ColorConvertFloat4ToU32(ImVec4(0.12f, 0.02f, 0.02f, 1.00f));
 
     void DrawSunkenRect(ImDrawList* drawList, ImVec2 min, ImVec2 max) {
         drawList->AddLine(ImVec2(min.x, min.y), ImVec2(max.x - 1, min.y), Color_Dark);
@@ -36,34 +34,51 @@ namespace YGUI {
         style.FramePadding = ImVec2(6.0f, 4.0f);
         style.ItemSpacing = ImVec2(6.0f, 6.0f);
         ImVec4* colors = style.Colors;
-        colors[ImGuiCol_WindowBg] = ImVec4(0.08f, 0.08f, 0.08f, 0.98f);
-        colors[ImGuiCol_ChildBg] = ImVec4(0.05f, 0.05f, 0.05f, 1.00f);
-        colors[ImGuiCol_PopupBg] = ImVec4(0.10f, 0.10f, 0.10f, 0.95f);
-        colors[ImGuiCol_Border] = ImVec4(0.22f, 0.22f, 0.22f, 1.00f);
+        // Ana Arayüz Panelleri (Bordo Tonları)
+        colors[ImGuiCol_WindowBg] = ImVec4(0.28f, 0.05f, 0.05f, 0.98f); // Mat Bordo
+        colors[ImGuiCol_ChildBg] = ImVec4(0.22f, 0.04f, 0.04f, 1.00f); // Koyu Bordo (İç paneller)
+        colors[ImGuiCol_PopupBg] = ImVec4(0.25f, 0.05f, 0.05f, 0.95f); // Bordo Açılır Pencereler
+        colors[ImGuiCol_Border] = ImVec4(0.38f, 0.08f, 0.08f, 1.00f); // Kenarlıklar
         colors[ImGuiCol_BorderShadow] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-        colors[ImGuiCol_Text] = ImVec4(0.88f, 0.88f, 0.88f, 1.00f);
-        colors[ImGuiCol_TextDisabled] = ImVec4(0.45f, 0.45f, 0.45f, 1.00f);
-        colors[ImGuiCol_FrameBg] = ImVec4(0.14f, 0.14f, 0.14f, 1.00f);
-        colors[ImGuiCol_FrameBgHovered] = ImVec4(0.20f, 0.14f, 0.14f, 1.00f);
-        colors[ImGuiCol_FrameBgActive] = ImVec4(0.35f, 0.10f, 0.10f, 1.00f);
-        colors[ImGuiCol_TitleBg] = ImVec4(0.25f, 0.05f, 0.05f, 1.00f);
-        colors[ImGuiCol_TitleBgActive] = ImVec4(0.42f, 0.08f, 0.08f, 1.00f);
-        colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.20f, 0.04f, 0.04f, 0.75f);
-        colors[ImGuiCol_Button] = ImVec4(0.35f, 0.08f, 0.08f, 1.00f);
-        colors[ImGuiCol_ButtonHovered] = ImVec4(0.48f, 0.12f, 0.12f, 1.00f);
-        colors[ImGuiCol_ButtonActive] = ImVec4(0.25f, 0.05f, 0.05f, 1.00f);
-        colors[ImGuiCol_Header] = ImVec4(0.32f, 0.07f, 0.07f, 1.00f);
-        colors[ImGuiCol_HeaderHovered] = ImVec4(0.45f, 0.10f, 0.10f, 1.00f);
-        colors[ImGuiCol_HeaderActive] = ImVec4(0.25f, 0.05f, 0.05f, 1.00f);
-        colors[ImGuiCol_ScrollbarBg] = ImVec4(0.08f, 0.08f, 0.08f, 1.00f);
-        colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.25f, 0.25f, 0.25f, 1.00f);
-        colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.35f, 0.08f, 0.08f, 1.00f);
-        colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.48f, 0.12f, 0.12f, 1.00f);
-        colors[ImGuiCol_SliderGrab] = ImVec4(0.42f, 0.08f, 0.08f, 1.00f);
-        colors[ImGuiCol_SliderGrabActive] = ImVec4(0.55f, 0.12f, 0.12f, 1.00f);
-        colors[ImGuiCol_Tab] = ImVec4(0.16f, 0.16f, 0.16f, 1.00f);
-        colors[ImGuiCol_TabHovered] = ImVec4(0.42f, 0.08f, 0.08f, 1.00f);
-        colors[ImGuiCol_TabActive] = ImVec4(0.32f, 0.07f, 0.07f, 1.00f);
+
+        // Yazılar (Beyaza yakın net gri)
+        colors[ImGuiCol_Text] = ImVec4(0.92f, 0.92f, 0.92f, 1.00f);
+        colors[ImGuiCol_TextDisabled] = ImVec4(0.55f, 0.45f, 0.45f, 1.00f);
+
+        // Metin Kutuları (TextBox Giriş Alanları - Koyu Gri/Siyah)
+        colors[ImGuiCol_FrameBg] = ImVec4(0.08f, 0.08f, 0.08f, 1.00f); // Siyah gömülü alan
+        colors[ImGuiCol_FrameBgHovered] = ImVec4(0.14f, 0.14f, 0.14f, 1.00f);
+        colors[ImGuiCol_FrameBgActive] = ImVec4(0.04f, 0.04f, 0.04f, 1.00f);
+
+        // Başlık Çubuğu (TitleBar - Canlı Bordo)
+        colors[ImGuiCol_TitleBg] = ImVec4(0.35f, 0.06f, 0.06f, 1.00f);
+        colors[ImGuiCol_TitleBgActive] = ImVec4(0.48f, 0.08f, 0.08f, 1.00f);
+        colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.25f, 0.04f, 0.04f, 0.75f);
+
+        // Butonlar (Siyah ve Koyu Gri)
+        colors[ImGuiCol_Button] = ImVec4(0.14f, 0.14f, 0.14f, 1.00f); // Siyah/Koyu Gri Buton
+        colors[ImGuiCol_ButtonHovered] = ImVec4(0.22f, 0.22f, 0.22f, 1.00f); // Açık Koyu Gri
+        colors[ImGuiCol_ButtonActive] = ImVec4(0.08f, 0.08f, 0.08f, 1.00f); // Tıklanınca Tam Siyah
+
+        // Listeler ve Ağaç Yapıları (Headers)
+        colors[ImGuiCol_Header] = ImVec4(0.16f, 0.16f, 0.16f, 1.00f);
+        colors[ImGuiCol_HeaderHovered] = ImVec4(0.24f, 0.24f, 0.24f, 1.00f);
+        colors[ImGuiCol_HeaderActive] = ImVec4(0.10f, 0.10f, 0.10f, 1.00f);
+
+        // Kaydırma Çubukları (Scrollbar)
+        colors[ImGuiCol_ScrollbarBg] = ImVec4(0.12f, 0.03f, 0.03f, 1.00f); // Bordo zemin
+        colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.16f, 0.16f, 0.16f, 1.00f); // Siyah kaydırıcı
+        colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.24f, 0.24f, 0.24f, 1.00f);
+        colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.08f, 0.08f, 0.08f, 1.00f);
+
+        // Kaydırıcılar (Slider)
+        colors[ImGuiCol_SliderGrab] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f); // Koyu Gri
+        colors[ImGuiCol_SliderGrabActive] = ImVec4(0.12f, 0.12f, 0.12f, 1.00f);
+
+        // Sekme Başlıkları 
+        colors[ImGuiCol_Tab] = ImVec4(0.12f, 0.12f, 0.12f, 1.00f);
+        colors[ImGuiCol_TabHovered] = ImVec4(0.22f, 0.22f, 0.22f, 1.00f);
+        colors[ImGuiCol_TabActive] = ImVec4(0.16f, 0.16f, 0.16f, 1.00f);
     }
 
     void Draw3DRect(ImDrawList* drawList, ImVec2 min, ImVec2 max, bool pressed) {
@@ -74,10 +89,25 @@ namespace YGUI {
         drawList->AddLine(ImVec2(max.x - 1, min.y), ImVec2(max.x - 1, max.y - 1), bottomRightColor);
         drawList->AddLine(ImVec2(min.x, max.y - 1), ImVec2(max.x - 1, max.y - 1), bottomRightColor);
         if (max.x - min.x > 3.0f && max.y - min.y > 3.0f) {
-            ImU32 innerTopLeft = pressed ? Color_Shadow : Color_Light;
-            drawList->AddLine(ImVec2(min.x + 1, min.y + 1), ImVec2(max.x - 2, min.y + 1), innerTopLeft);
-            drawList->AddLine(ImVec2(min.x + 1, min.y + 1), ImVec2(min.x + 1, max.y - 2), innerTopLeft);
+            ImU32 innerBottomRight = pressed ? Color_Light : Color_Shadow;
+            drawList->AddLine(ImVec2(min.x + 1, max.y - 2), ImVec2(max.x - 2, max.y - 2), innerBottomRight);
+            drawList->AddLine(ImVec2(max.x - 2, min.y + 1), ImVec2(max.x - 2, max.y - 2), innerBottomRight);
         }
+    }
+
+    void BeginContentPanel(const char* str_id, float width, float height) {
+        ImGuiContext& g = *GImGui;
+        ImGuiWindow* window = ImGui::GetCurrentWindow();
+        ImVec2 size = ImGui::CalcItemSize(ImVec2(width, height), ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y);
+        ImVec2 pos = window->DC.CursorPos;
+        window->DrawList->AddRectFilled(pos, ImVec2(pos.x + size.x, pos.y + size.y), ImGui::GetColorU32(ImGuiCol_ChildBg));
+        DrawSunkenRect(window->DrawList, pos, ImVec2(pos.x + size.x, pos.y + size.y));
+        ImGui::SetNextWindowPos(ImVec2(pos.x + 4.0f, pos.y + 4.0f));
+        ImGui::BeginChild(str_id, ImVec2(size.x - 8.0f, size.y - 8.0f), false, ImGuiWindowFlags_NoBackground);
+    }
+
+    void EndContentPanel() {
+        ImGui::EndChild();
     }
 
     void NewFrame(float deltaTime, float displayWidth, float displayHeight) {
@@ -194,16 +224,16 @@ namespace YGUI {
         Draw3DRect(window->DrawList, grab_bb.Min, grab_bb.Max, grab_active);
         return changed;
     }
-
     void SameLine() {
         ImGui::SameLine();
     }
-
     void Separator() {
         ImGui::Separator();
     }
-
     void Spacing() {
         ImGui::Spacing();
+    }
+    ImGuiContext* GetimguiContext() {
+        return ImGui::GetCurrentContext();
     }
 }
