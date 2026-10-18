@@ -1,5 +1,16 @@
-#include "pch.h"
+// YGUI VERSION 1.2
+#include "imgui.h"
+#include "imgui_internal.h"
+
+#include <stdarg.h>
+#include <cstdio> 
+
 #include "yg_ygui.h"
+
+#ifdef USE_OPENGL_2
+#pragma comment(lib, "opengl32.lib")
+#include "imgui_impl_opengl2.h"
+#endif
 
 namespace YGUI {
     static ImU32 Color_Light = ImGui::ColorConvertFloat4ToU32(ImVec4(0.60f, 0.60f, 0.60f, 1.00f));
@@ -20,6 +31,11 @@ namespace YGUI {
     void Initialize() {
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
+
+        #ifdef USE_OPENGL_2
+        ImGui_ImplOpenGL2_Init();
+        #endif
+
         ImGuiStyle& style = ImGui::GetStyle();
         style.WindowRounding = 0.0f;
         style.FrameRounding = 0.0f;
@@ -114,14 +130,28 @@ namespace YGUI {
         ImGuiIO& io = ImGui::GetIO();
         io.DisplaySize = ImVec2(displayWidth, displayHeight);
         io.DeltaTime = deltaTime > 0.0f ? deltaTime : (1.0f / 60.0f);
+
+        #ifdef USE_OPENGL_2
+        ImGui_ImplOpenGL2_NewFrame();
+        #endif
+
         ImGui::NewFrame();
     }
 
     void EndFrame() {
         ImGui::Render();
+
+        #ifdef USE_OPENGL_2
+        ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
+        #endif
     }
 
     void Shutdown() {
+
+        #ifdef USE_OPENGL_2
+        ImGui_ImplOpenGL2_Shutdown();
+        #endif
+
         ImGui::DestroyContext();
     }
 
@@ -235,5 +265,47 @@ namespace YGUI {
     }
     ImGuiContext* GetimguiContext() {
         return ImGui::GetCurrentContext();
+    }
+    namespace {
+        ImU32 ToColor(float r, float g, float b, float a) {
+            return ImGui::ColorConvertFloat4ToU32(ImVec4(r, g, b, a));
+        }
+    }
+
+    void ScreenFillRect(float x, float y, float w, float h, float r, float g, float b, float a) {
+        ImGui::GetBackgroundDrawList()->AddRectFilled(ImVec2(x, y), ImVec2(x + w, y + h), ToColor(r, g, b, a));
+    }
+
+    void ScreenRect(float x, float y, float w, float h, float r, float g, float b, float a, float thickness) {
+        ImGui::GetBackgroundDrawList()->AddRect(ImVec2(x, y), ImVec2(x + w, y + h), ToColor(r, g, b, a), 0.0f, 0, thickness);
+    }
+
+    void ScreenLine(float x0, float y0, float x1, float y1, float r, float g, float b, float a, float thickness) {
+        ImGui::GetBackgroundDrawList()->AddLine(ImVec2(x0, y0), ImVec2(x1, y1), ToColor(r, g, b, a), thickness);
+    }
+
+    void ScreenConvexPoly(const float* xyPairs, int pointCount, float r, float g, float b, float a) {
+        constexpr int MAX_POINTS = 16;
+        if (xyPairs == nullptr || pointCount < 3) return;
+        if (pointCount > MAX_POINTS) pointCount = MAX_POINTS;
+
+        ImVec2 points[MAX_POINTS];
+        for (int i = 0; i < pointCount; i++) {
+            points[i] = ImVec2(xyPairs[i * 2], xyPairs[i * 2 + 1]);
+        }
+        ImGui::GetBackgroundDrawList()->AddConvexPolyFilled(points, pointCount, ToColor(r, g, b, a));
+    }
+
+    float ScreenText(float x, float y, const char* text, float size, float r, float g, float b, float a) {
+        if (text == nullptr) return 0.0f;
+
+        ImFont* font = ImGui::GetFont();
+        ImGui::GetBackgroundDrawList()->AddText(font, size, ImVec2(x, y), ToColor(r, g, b, a), text);
+        return font->CalcTextSizeA(size, FLT_MAX, 0.0f, text).x;
+    }
+
+    float ScreenTextWidth(const char* text, float size) {
+        if (text == nullptr) return 0.0f;
+        return ImGui::GetFont()->CalcTextSizeA(size, FLT_MAX, 0.0f, text).x;
     }
 }
