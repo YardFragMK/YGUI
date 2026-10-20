@@ -21,11 +21,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\yg_ygui.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="..\src\yg_ygui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -44,5 +39,10 @@
     <ClCompile Include="..\extern\imgui\imgui_impl_opengl2.cpp">
       <Filter>Source Files\extern\imgui</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\yg_ygui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

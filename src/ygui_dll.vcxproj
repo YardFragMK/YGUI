@@ -252,9 +252,6 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\yg_ygui.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="..\extern\imgui\imgui.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -289,6 +286,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_GL2|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\src\yg_ygui.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\yg_ygui.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

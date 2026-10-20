@@ -5,7 +5,7 @@
 #include <stdarg.h>
 #include <cstdio> 
 
-#include "yg_ygui.h"
+#include "../include/yg_ygui.h"
 
 #ifdef USE_OPENGL_2
 #pragma comment(lib, "opengl32.lib")
