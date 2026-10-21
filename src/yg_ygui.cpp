@@ -1,4 +1,4 @@
-// YGUI VERSION 1.2
+// YGUI VERSION 1.3
 #include "imgui.h"
 #include "imgui_internal.h"
 
@@ -31,6 +31,10 @@ namespace YGUI {
     void Initialize() {
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
+        ImGuiIO& io = ImGui::GetIO();
+        io.IniFilename = nullptr;                    // imgui.ini dosyasi yazilmasin
+        io.ConfigWindowsMoveFromTitleBarOnly = true; // pencere yalnizca baslik cubugundan surukelenir
+        io.FontGlobalScale = 1.0f;                   // varsayilan font yuksek cozunurlukte cok kucuk kaliyor
 
         #ifdef USE_OPENGL_2
         ImGui_ImplOpenGL2_Init();
@@ -307,5 +311,106 @@ namespace YGUI {
     float ScreenTextWidth(const char* text, float size) {
         if (text == nullptr) return 0.0f;
         return ImGui::GetFont()->CalcTextSizeA(size, FLT_MAX, 0.0f, text).x;
+    }
+
+    void SetNextWindowPos(float x, float y, float pivotX, float pivotY) {
+        // Always: otomatik boyutlanan pencerede pivot ile merkezleme ancak her karede
+        // yeniden uygulanirsa dogru kalir (ilk karede boyut henuz bilinmez).
+        ImGui::SetNextWindowPos(ImVec2(x, y), ImGuiCond_Always, ImVec2(pivotX, pivotY));
+    }
+
+    void SetNextWindowSize(float width, float height) {
+        ImGui::SetNextWindowSize(ImVec2(width, height), ImGuiCond_Always);
+    }
+
+    bool DrawSelectable(const char* label, bool selected, float width, float height) {
+        return ImGui::Selectable(label, selected, 0, ImVec2(width, height));
+    }
+
+    void SameLineAt(float offsetX) {
+        ImGui::SameLine(offsetX);
+    }
+
+    void DrawIcon(int iconId, float size, float r, float g, float b, float a) {
+        ImGui::Dummy(ImVec2(size, size));
+        if (a <= 0.0f) return;
+
+        const ImVec2 min = ImGui::GetItemRectMin();
+        const ImU32 color = ToColor(r, g, b, a);
+        ImDrawList* drawList = ImGui::GetWindowDrawList();
+
+        if (iconId == YGUI_ICON_LOCK) {
+            // Govde: simgenin alt kismi; kilp: ustte acik dortgen cizgi.
+            const float bodyTop = min.y + size * 0.42f;
+            drawList->AddRectFilled(ImVec2(min.x + size * 0.1f, bodyTop), ImVec2(min.x + size * 0.9f, min.y + size), color);
+
+            const ImVec2 shackle[4] = {
+                ImVec2(min.x + size * 0.28f, bodyTop),
+                ImVec2(min.x + size * 0.28f, min.y + size * 0.18f),
+                ImVec2(min.x + size * 0.72f, min.y + size * 0.18f),
+                ImVec2(min.x + size * 0.72f, bodyTop)
+            };
+            drawList->AddPolyline(shackle, 4, color, ImDrawFlags_None, 2.0f);
+        }
+        else if (iconId == YGUI_ICON_SHIELD) {
+            // Noktalar ekranda saat yonunde siralidir (ImGui dolgusu icin gerekli).
+            const ImVec2 points[6] = {
+                ImVec2(min.x + size * 0.5f,  min.y),
+                ImVec2(min.x + size,         min.y + size * 0.25f),
+                ImVec2(min.x + size * 0.85f, min.y + size * 0.8f),
+                ImVec2(min.x + size * 0.5f,  min.y + size),
+                ImVec2(min.x + size * 0.15f, min.y + size * 0.8f),
+                ImVec2(min.x,                min.y + size * 0.25f)
+            };
+            drawList->AddConvexPolyFilled(points, 6, color);
+        }
+    }
+
+    namespace {
+        // keycode, engine'in buttoncodes.h degerleridir (harfler/rakamlar ASCII,
+        // ozel tuslar 256 ve uzeri, F1 = 268).
+        ImGuiKey ToImGuiKey(int code) {
+            if (code >= 'A' && code <= 'Z') return static_cast<ImGuiKey>(ImGuiKey_A + (code - 'A'));
+            if (code >= '0' && code <= '9') return static_cast<ImGuiKey>(ImGuiKey_0 + (code - '0'));
+            if (code >= 268 && code <= 279) return static_cast<ImGuiKey>(ImGuiKey_F1 + (code - 268));
+
+            switch (code) {
+            case 32:  return ImGuiKey_Space;
+            case 256: return ImGuiKey_Escape;
+            case 257: return ImGuiKey_Enter;
+            case 258: return ImGuiKey_Tab;
+            case 259: return ImGuiKey_Backspace;
+            case 260: return ImGuiKey_LeftCtrl;
+            case 261: return ImGuiKey_LeftShift;
+            case 262: return ImGuiKey_LeftAlt;
+            case 264: return ImGuiKey_UpArrow;
+            case 265: return ImGuiKey_DownArrow;
+            case 266: return ImGuiKey_LeftArrow;
+            case 267: return ImGuiKey_RightArrow;
+            default:  return ImGuiKey_None;
+            }
+        }
+    }
+
+    void AddMousePosEvent(float x, float y) {
+        ImGui::GetIO().AddMousePosEvent(x, y);
+    }
+
+    // button: 0 sol, 1 sag, 2 orta (ImGui duzeni).
+    void AddMouseButtonEvent(int button, bool down) {
+        ImGui::GetIO().AddMouseButtonEvent(button, down);
+    }
+
+    void AddMouseWheelEvent(float wheelX, float wheelY) {
+        ImGui::GetIO().AddMouseWheelEvent(wheelX, wheelY);
+    }
+
+    void AddKeyEvent(int keycode, bool down) {
+        const ImGuiKey key = ToImGuiKey(keycode);
+        if (key != ImGuiKey_None) ImGui::GetIO().AddKeyEvent(key, down);
+    }
+
+    void AddInputCharacter(unsigned int codepoint) {
+        ImGui::GetIO().AddInputCharacter(codepoint);
     }
 }
